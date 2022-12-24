@@ -143,11 +143,11 @@ class Register extends React.Component {
             style={{
               display: "flex",
               alignItems: "center",
-              marginLeft: "33%",
+              marginLeft: "15%",
               marginBottom: "-40px",
             }}
           >
-            <Image src={HerculesMedalLogo} size="small" alt="logo" />
+            <Image src={HerculesMedalLogo} size="medium" alt="logo" />
           </div>
           <Header as="h1" icon color="orange" textAlign="center">
             Register for HerculesChat
