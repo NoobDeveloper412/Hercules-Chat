@@ -23,7 +23,8 @@ function CustomButton({ content, color, loading }) {
         transition: "background-color 0.5s, box-shadow 0.5s",
       }}
     >
-      <p style={{ color: color }}>{content}</p>
+      {content}
+      {/* <p style={{ color: color }}>{content}</p> */}
     </Button>
   );
 }

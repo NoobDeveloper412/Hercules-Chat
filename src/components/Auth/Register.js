@@ -149,7 +149,7 @@ class Register extends React.Component {
           >
             <Image src={HerculesMedalLogo} size="small" alt="logo" />
           </div>
-          <Header as="h2" icon color="orange" textAlign="center">
+          <Header as="h1" icon color="orange" textAlign="center">
             Register for HerculesChat
           </Header>
           <Form size="large" onSubmit={this.handleSubmit}>
