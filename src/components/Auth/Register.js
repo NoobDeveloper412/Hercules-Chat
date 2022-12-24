@@ -1,14 +1,6 @@
 import React from "react";
 import firebase from "../../firebase";
-import {
-  Grid,
-  Form,
-  Segment,
-  Header,
-  Message,
-  Image,
-  Input,
-} from "semantic-ui-react";
+import { Grid, Form, Segment, Header, Message, Image } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { HerculesMedalLogo } from "../../globals/Images";
 import CustomButton from "../Utility/Button";
@@ -16,11 +8,12 @@ import { Colors } from "../Utility/Colors";
 
 class Register extends React.Component {
   state = {
-    username: "",
-    email: "",
-    password: "",
-    passwordConfirmation: "",
+    username: "Muhamamd Zuhair",
+    email: "ali@gmail.com",
+    password: "12345678Az",
+    passwordConfirmation: "12345678Az",
     errors: [],
+    loading: false,
   };
 
   isFormValid = () => {
@@ -82,20 +75,38 @@ class Register extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  handleInputError = (errors, inputName) => {
+    return errors.some((error) =>
+      error.message.toLowerCase().includes(inputName)
+    )
+      ? "error"
+      : "";
+  };
+
   handleSubmit = (event) => {
     event.preventDefault();
 
     if (this.isFormValid()) {
+      this.setState({ errors: [], loading: true });
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
-        .then((createdUser) => console.log(createdUser))
-        .catch((err) => console.log(err));
+        .then((createdUser) => {
+          console.log(createdUser);
+          this.setState({ loading: false });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({
+            loading: false,
+            errors: this.state.errors.concat(err),
+          });
+        });
     }
   };
 
   render() {
-    const { username, email, password, passwordConfirmation, errors } =
+    const { username, email, password, passwordConfirmation, errors, loading } =
       this.state;
 
     return (
@@ -123,7 +134,7 @@ class Register extends React.Component {
                 icon="user"
                 iconPosition="left"
                 placeholder="Username"
-                className="authenticationInputs"
+                className={this.handleInputError(errors, "username")}
                 onChange={this.handleChange}
                 type="text"
                 value={username}
@@ -135,11 +146,11 @@ class Register extends React.Component {
                 icon="mail"
                 iconPosition="left"
                 placeholder="Email Address"
-                className="authenticationInputs"
                 style={{ color: Colors.orange }}
                 onChange={this.handleChange}
                 type="email"
                 value={email}
+                className={this.handleInputError(errors, "email")}
               />
 
               <Form.Input
@@ -148,7 +159,7 @@ class Register extends React.Component {
                 icon="lock"
                 iconPosition="left"
                 placeholder="Password"
-                className="authenticationInputs"
+                className={this.handleInputError(errors, "password")}
                 onChange={this.handleChange}
                 style={{ color: Colors.orange }}
                 type="password"
@@ -161,14 +172,21 @@ class Register extends React.Component {
                 icon="repeat"
                 iconPosition="left"
                 placeholder="Password Confirmation"
-                className="authenticationInputs"
+                className={this.handleInputError(
+                  errors,
+                  "passwordConfirmation"
+                )}
                 style={{ color: Colors.orange }}
                 onChange={this.handleChange}
                 type="password"
                 value={passwordConfirmation}
               />
 
-              <CustomButton content={"Submit"} color={Colors.orange} />
+              <CustomButton
+                content={"Submit"}
+                color={Colors.orange}
+                loading={loading}
+              />
             </Segment>
           </Form>
           {errors.length > 0 && (
@@ -178,7 +196,10 @@ class Register extends React.Component {
             </Message>
           )}
           <Message>
-            Already a user? <Link to="/login" className="authenticationLinks">Login</Link>
+            Already a user?{" "}
+            <Link to="/login" className="authenticationLinks">
+              Login
+            </Link>
           </Message>
         </Grid.Column>
       </Grid>
