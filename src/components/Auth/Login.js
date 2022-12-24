@@ -112,7 +112,7 @@ class Login extends React.Component {
 
               <CustomButton
                 content={"Submit"}
-                color={Colors.violet}
+                color={"violet"}
                 loading={loading}
               />
             </Segment>
@@ -125,7 +125,7 @@ class Login extends React.Component {
           )}
           <Message>
             Don't have an account?{" "}
-            <Link to="/register" className="authenticationLinks">
+            <Link to="/register" color={Colors.violet}>
               Register
             </Link>
           </Message>

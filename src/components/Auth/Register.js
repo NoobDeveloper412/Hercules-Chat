@@ -211,7 +211,7 @@ class Register extends React.Component {
 
               <CustomButton
                 content={"Submit"}
-                color={Colors.orange}
+                color={"orange"}
                 loading={loading}
               />
             </Segment>
