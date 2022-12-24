@@ -10,6 +10,7 @@ const firebaseConfig = {
   storageBucket: "hercules-chat-446d5.appspot.com",
   messagingSenderId: "155533425713",
   appId: "1:155533425713:web:3e28767cf46162b7682910",
+  databaseURL: "https://hercules-chat-446d5-default-rtdb.firebaseio.com",
 };
 
 firebase.initializeApp(firebaseConfig);
