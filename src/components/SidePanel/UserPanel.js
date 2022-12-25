@@ -1,7 +1,6 @@
 import firebase from "../../firebase";
 import React from "react";
 import { Dropdown, Grid, Header, Icon, Image } from "semantic-ui-react";
-import { connect } from "react-redux";
 
 class UserPanel extends React.Component {
   state = {
