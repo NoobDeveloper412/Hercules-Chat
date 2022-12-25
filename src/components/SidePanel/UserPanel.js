@@ -1,6 +1,6 @@
+import firebase from "../../firebase";
 import React from "react";
 import { Dropdown, Grid, Header, Icon, Image } from "semantic-ui-react";
-import { HerculesMedalLogo } from "../../globals/Images";
 
 class UserPanel extends React.Component {
   dropDownOptions = () => [
@@ -19,9 +19,16 @@ class UserPanel extends React.Component {
     },
     {
       key: "signOut",
-      text: <span>Sign Out</span>,
+      text: <span onClick={this.handleSignOut}>Sign Out</span>,
     },
   ];
+
+  handleSignOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => console.log("Signed out!"));
+  };
   render() {
     return (
       <Grid style={{ background: "#4c3c4c" }}>
