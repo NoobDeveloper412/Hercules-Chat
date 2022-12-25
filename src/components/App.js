@@ -6,19 +6,23 @@ import ColorPanel from "./ColorPanel/ColorPanel";
 import Messages from "./Messages/Messages";
 import MetaPanel from "./MetaPanel.js/MetaPanel";
 import SidePanel from "./SidePanel/SidePanel";
+// import { ToastContainer } from "react-toastify";
 
 const App = ({ currentUser }) => {
   return (
-    <Grid columns="equal" className="app" style={{ background: "#eee" }}>
-      <ColorPanel />
-      <SidePanel currentUser={currentUser} />
-      <Grid.Column style={{ marginLeft: 320 }}>
-        <Messages />
-      </Grid.Column>
-      <Grid.Column width={4}>
-        <MetaPanel />
-      </Grid.Column>
-    </Grid>
+    <React.Fragment>
+      <Grid columns="equal" className="app" style={{ background: "#eee" }}>
+        <ColorPanel />
+        <SidePanel currentUser={currentUser} />
+        <Grid.Column style={{ marginLeft: 320 }}>
+          <Messages />
+        </Grid.Column>
+        <Grid.Column width={4}>
+          <MetaPanel />
+        </Grid.Column>
+      </Grid>
+      {/* <ToastContainer /> */}
+    </React.Fragment>
   );
 };
 const mapStateToProps = (state) => ({

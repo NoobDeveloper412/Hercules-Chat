@@ -22,8 +22,24 @@ const user_reducer = (state = initialUserState, action) => {
   }
 };
 
+const toast_reducer = (state = [], action) => {
+  const { payload, type } = action;
+
+  switch (type) {
+    case actionTypes.ADD_TOAST:
+      return [payload, ...state];
+
+    case actionTypes.REMOVE_TOAST:
+      return state.filter((toast) => toast.id !== payload);
+
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   user: user_reducer,
+  toasts: toast_reducer,
 });
 
 export default rootReducer;
