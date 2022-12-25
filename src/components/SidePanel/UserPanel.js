@@ -34,6 +34,7 @@ class UserPanel extends React.Component {
       .then(() => console.log("Signed out!"));
   };
   render() {
+    const { user } = this.state;
     return (
       <Grid style={{ background: "#4c3c4c" }}>
         <Grid.Column>
@@ -43,16 +44,21 @@ class UserPanel extends React.Component {
               <Icon name="lightning" />
               <Header.Content>HerculesChat</Header.Content>
             </Header>
+            {/* User DropDown */}
+
+            <Header style={{ padding: ".25em" }} as="h4" inverted>
+              <Dropdown
+                style={{ width: "200px" }}
+                trigger={
+                  <span>
+                    <Image src={user.photoURL} spaced="right" avatar />
+                    {user.displayName}
+                  </span>
+                }
+                options={this.dropDownOptions()}
+              />
+            </Header>
           </Grid.Row>
-
-          {/* User DropDown */}
-
-          <Header style={{ padding: ".25em" }} as="h4" inverted>
-            <Dropdown
-              trigger={<span>{this.state.user.displayName}</span>}
-              options={this.dropDownOptions()}
-            />
-          </Header>
         </Grid.Column>
       </Grid>
     );
