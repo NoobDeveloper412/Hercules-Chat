@@ -29,7 +29,12 @@ class Channels extends React.Component {
           {/* Channels */}
         </Menu.Menu>
         {/* Add Channel */}
-        <Modal basic open={modal} onClose={this.handleModalChange}>
+        <Modal
+          dimmer="blurring"
+          transition="scale"
+          open={modal}
+        //   onClose={this.handleModalChange}
+        >
           <Modal.Header>Add a channel</Modal.Header>
           <Modal.Content>
             <Form>
