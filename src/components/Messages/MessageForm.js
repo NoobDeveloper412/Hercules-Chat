@@ -2,13 +2,19 @@ import React from "react";
 import { Segment, Button, Input } from "semantic-ui-react";
 import firebase from "../../firebase";
 import FileModal from "./FileModal";
+import uuidv4 from "uuid/v4";
+import UploadProgressBar from "./UploadProgressBar";
 
 class MessageForm extends React.Component {
   state = {
+    storageRef: firebase.storage().ref(),
+    uploadTask: null,
+    uploadState: "",
+    percentUploaded: 0,
     message: "",
-    loading: false,
     channel: this.props.currentChannel,
     user: this.props.currentUser,
+    loading: false,
     errors: [],
     modal: false,
   };
@@ -19,9 +25,8 @@ class MessageForm extends React.Component {
 
   handleModalChange = () => this.setState({ modal: !this.state.modal });
 
-  createMessage = () => {
+  createMessage = (fileUrl = null) => {
     const message = {
-      content: this.state.message,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
       user: {
         id: this.state.user.uid,
@@ -29,6 +34,12 @@ class MessageForm extends React.Component {
         avatar: this.state.user.photoURL,
       },
     };
+    if (fileUrl !== null) {
+      message["image"] = fileUrl;
+    } else {
+      message["content"] = this.state.message;
+    }
+
     return message;
   };
 
@@ -57,12 +68,71 @@ class MessageForm extends React.Component {
       });
     }
   };
-  uploadFileToCloud  = (metadata, file)=>{
-    console.log(metadata, file)
-  }
+  uploadFileToCloud = (metadata, file) => {
+    const pathToUpload = this.state.channel.id;
+    const ref = this.props.messagesRef;
+    const filePath = `chat/public/${uuidv4()}.jpg`;
+
+    this.setState(
+      {
+        uploadState: "uploading",
+        uploadTask: this.state.storageRef.child(filePath).put(file, metadata),
+      },
+      () => {
+        this.state.uploadTask.on(
+          "state_changed",
+          (snap) => {
+            const percentUploaded = Math.round(
+              (snap.bytesTransferred / snap.totalBytes) * 100
+            );
+            this.props.isProgressBarVisible(percentUploaded);
+            this.setState({ percentUploaded });
+          },
+          (err) => {
+            console.error(err);
+            this.setState({
+              errors: this.state.errors.concat(err),
+              uploadState: "error",
+              uploadTask: null,
+            });
+          },
+          () => {
+            this.state.uploadTask.snapshot.ref
+              .getDownloadURL()
+              .then((downloadUrl) => {
+                this.sendFileMessage(downloadUrl, ref, pathToUpload);
+              })
+              .catch((err) => {
+                console.error(err);
+                this.setState({
+                  errors: this.state.errors.concat(err),
+                  uploadState: "error",
+                  uploadTask: null,
+                });
+              });
+          }
+        );
+      }
+    );
+  };
+
+  sendFileMessage = (fileUrl, ref, pathToUpload) => {
+    ref
+      .child(pathToUpload)
+      .push()
+      .set(this.createMessage(fileUrl))
+      .then(() => {
+        this.setState({ uploadState: "done" });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ errors: this.state.errors.concat(err) });
+      });
+  };
 
   render() {
-    const { errors, message, loading, modal } = this.state;
+    const { errors, message, loading, modal, percentUploaded, uploadState } =
+      this.state;
     return (
       <Segment className="message__form">
         <Input
@@ -96,8 +166,16 @@ class MessageForm extends React.Component {
             onClick={this.handleModalChange}
             icon="cloud upload"
           />
-          <FileModal uploadFileToCloud={this.uploadFileToCloud} modal={modal} handleModalChange={this.handleModalChange} />
         </Button.Group>
+        <FileModal
+          uploadFileToCloud={this.uploadFileToCloud}
+          modal={modal}
+          handleModalChange={this.handleModalChange}
+        />
+        <UploadProgressBar
+          uploadState={uploadState}
+          percentUploaded={percentUploaded}
+        />
       </Segment>
     );
   }
