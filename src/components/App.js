@@ -8,14 +8,21 @@ import MetaPanel from "./MetaPanel.js/MetaPanel";
 import SidePanel from "./SidePanel/SidePanel";
 // import { ToastContainer } from "react-toastify";
 
-const App = ({ currentUser }) => {
+const App = ({ currentUser, currentChannel }) => {
   return (
     <React.Fragment>
       <Grid columns="equal" className="app" style={{ background: "#eee" }}>
         <ColorPanel />
-        <SidePanel currentUser={currentUser} />
+        <SidePanel
+          key={currentUser && currentUser.id}
+          currentUser={currentUser}
+        />
         <Grid.Column style={{ marginLeft: 320 }}>
-          <Messages />
+          <Messages
+            key={currentChannel && currentChannel.id}
+            currentChannel={currentChannel}
+            currentUser={currentUser}
+          />
         </Grid.Column>
         <Grid.Column width={4}>
           <MetaPanel />
@@ -27,5 +34,6 @@ const App = ({ currentUser }) => {
 };
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
+  currentChannel: state.channel.currentChannel,
 });
 export default connect(mapStateToProps)(App);
