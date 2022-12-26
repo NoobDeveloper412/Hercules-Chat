@@ -22,20 +22,20 @@ const user_reducer = (state = initialUserState, action) => {
   }
 };
 
-const toast_reducer = (state = [], action) => {
-  const { payload, type } = action;
+// const toast_reducer = (state = [], action) => {
+//   const { payload, type } = action;
 
-  switch (type) {
-    case actionTypes.ADD_TOAST:
-      return [payload, ...state];
+//   switch (type) {
+//     case actionTypes.ADD_TOAST:
+//       return [payload, ...state];
 
-    case actionTypes.REMOVE_TOAST:
-      return state.filter((toast) => toast.id !== payload);
+//     case actionTypes.REMOVE_TOAST:
+//       return state.filter((toast) => toast.id !== payload);
 
-    default:
-      return state;
-  }
-};
+//     default:
+//       return state;
+//   }
+// };
 const initialChannelState = {
   currentChannel: null,
 };
