@@ -17,11 +17,11 @@ export class DirectMessages extends Component {
       this.addListeners(this.state.user.uid);
     }
   }
-//   componentWillUnmount() {
-//     if (!this.state.user) {
-//       this.removeListeners();
-//     }
-//   }
+  //   componentWillUnmount() {
+  //     if (!this.state.user) {
+  //       this.removeListeners();
+  //     }
+  //   }
   removeListeners = () => {
     this.state.channelsRef.off();
   };
@@ -77,10 +77,10 @@ export class DirectMessages extends Component {
 
   changeChannel = (user) => {
     const channelId = this.getChannelId(user.uid);
-    console.log(user)
+    console.log(user);
     const channelData = {
-        id: channelId,
-        name: user.name,
+      id: channelId,
+      name: user.name,
     };
     this.props.setCurrentChannel(channelData);
     this.props.setPrivateChannel(true);
@@ -104,7 +104,7 @@ export class DirectMessages extends Component {
         {users.map((user) => (
           <Menu.Item
             key={user.uid}
-            onClick={this.changeChannel(user)}
+            onClick={() => this.changeChannel(user)}
             style={{ opacity: 0.7, fontStyle: "italic" }}
           >
             <Icon
