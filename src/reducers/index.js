@@ -38,6 +38,7 @@ const user_reducer = (state = initialUserState, action) => {
 // };
 const initialChannelState = {
   currentChannel: null,
+  isPrivateChannel: false,
 };
 const channel_reducer = (state = initialChannelState, action) => {
   const { payload, type } = action;
@@ -48,14 +49,19 @@ const channel_reducer = (state = initialChannelState, action) => {
         ...state,
         currentChannel: payload.currentChannel,
       };
+    case actionTypes.SET_PRIVATE_CHANNEL:
+      return {
+        ...state,
+        isPrivateChannel: payload.isPrivateChannel,
+      };
 
     default:
-      return state
+      return state;
   }
 };
 const rootReducer = combineReducers({
   user: user_reducer,
-  channel:channel_reducer
+  channel: channel_reducer,
 });
 
 export default rootReducer;
