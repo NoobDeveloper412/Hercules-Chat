@@ -77,7 +77,6 @@ export class DirectMessages extends Component {
 
   changeChannel = (user) => {
     const channelId = this.getChannelId(user.uid);
-    console.log(user);
     const channelData = {
       id: channelId,
       name: user.name,
