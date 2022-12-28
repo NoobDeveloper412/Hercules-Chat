@@ -4,6 +4,7 @@ import firebase from "../../firebase";
 import MessagesHeader from "./MessagesHeader";
 import MessageForm from "./MessageForm";
 import Message from "./Message";
+import Portal from "../Utility/TransitionalPortal";
 
 class Messages extends React.Component {
   state = {
@@ -21,6 +22,8 @@ class Messages extends React.Component {
     privateChannel: this.props.isPrivateChannel,
     isChannelStarred: false,
     usersRef: firebase.database().ref("users"),
+    portal: false,
+    portalTitle: "",
   };
 
   componentDidMount() {
@@ -30,6 +33,12 @@ class Messages extends React.Component {
       this.addUserStarListener(channel.id, user.uid);
     }
   }
+
+  handlePortal = (title) =>
+    this.setState(() => ({
+      portal: true,
+      portalTitle: title,
+    }));
 
   addUserStarListener = (channelId, userId) => {
     this.state.usersRef
@@ -155,15 +164,17 @@ class Messages extends React.Component {
           },
         },
       });
+      this.handlePortal("Added to starred!");
     } else {
       this.state.usersRef
         .child(`${this.state.user.uid}/starred`)
         .child(this.state.channel.id)
         .remove((err) => {
           if (!err) {
-            console.log("Success");
+            // console.log("Success");
           }
         });
+      this.handlePortal("Removed from starred!");
     }
   };
   render() {
@@ -179,6 +190,8 @@ class Messages extends React.Component {
       searchLoading,
       isChannelStarred,
       privateChannel,
+      portal,
+      portalTitle,
     } = this.state;
     return (
       <React.Fragment>
@@ -210,6 +223,7 @@ class Messages extends React.Component {
           isPrivateChannel={privateChannel}
           getMessagesRef={this.getMessagesRef}
         />
+        <Portal content={{ portal, title: portalTitle }} />
       </React.Fragment>
     );
   }

@@ -24,6 +24,7 @@ class Channels extends React.Component {
     messagesRef: firebase.database().ref("messages"),
     notifications: [],
     modal: false,
+    
     firstLoad: true,
   };
 

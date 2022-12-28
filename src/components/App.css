@@ -45,3 +45,8 @@ body,
 .menu {
   padding-bottom: 2em;
 }
+
+/* Transitional Portal */
+.ui.inverted.segment {
+  /* width: 100%; */
+}
