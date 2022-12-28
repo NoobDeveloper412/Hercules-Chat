@@ -46,7 +46,6 @@ class Channels extends React.Component {
 
   addNotificationListener = (channelId) => {
     this.state.messagesRef.child(channelId).on("value", (snap) => {
-      console.log(this.state.channel);
       if (this.state.channel) {
         this.handleNotifications(
           channelId,
@@ -137,7 +136,6 @@ class Channels extends React.Component {
   };
 
   clearNotifications = () => {
-    console.log("lol");
     let index = this.state.notifications.findIndex(
       (notification) => notification.id === this.state.channel.id
     );

@@ -19,14 +19,31 @@ class Messages extends React.Component {
     searchResults: [],
     searchLoading: false,
     privateChannel: this.props.isPrivateChannel,
+    isChannelStarred: false,
+    usersRef: firebase.database().ref("users"),
   };
 
   componentDidMount() {
     const { channel, user } = this.state;
     if (channel && user) {
       this.addListeners(channel.id);
+      this.addUserStarListener(channel.id, user.uid);
     }
   }
+
+  addUserStarListener = (channelId, userId) => {
+    this.state.usersRef
+      .child(userId)
+      .child("starred")
+      .once("value")
+      .then((data) => {
+        if (data.val() !== null) {
+          const channelIds = Object.keys(data.val());
+          const prevStarred = channelIds.includes(channelId);
+          this.setState({ isChannelStarred: prevStarred });
+        }
+      });
+  };
 
   addListeners = (channelId) => {
     this.addMessageListener(channelId);
@@ -117,6 +134,38 @@ class Messages extends React.Component {
     }, 1000);
   };
 
+  handleStar = () => {
+    this.setState(
+      (prevState) => ({
+        isChannelStarred: !prevState.isChannelStarred,
+      }),
+      () => this.starChannel()
+    );
+  };
+
+  starChannel = () => {
+    if (this.state.isChannelStarred) {
+      this.state.usersRef.child(`${this.state.user.uid}/starred`).update({
+        [this.state.channel.id]: {
+          name: this.state.channel.name,
+          details: this.state.channel.details,
+          createdBy: {
+            name: this.state.channel.createdBy.name,
+            avatar: this.state.channel.createdBy.avatar,
+          },
+        },
+      });
+    } else {
+      this.state.usersRef
+        .child(`${this.state.user.uid}/st  arred`)
+        .child(this.state.channel.id)
+        .remove((err) => {
+          if (!err) {
+            console.log("Success");
+          }
+        });
+    }
+  };
   render() {
     const {
       messagesRef,
@@ -128,6 +177,7 @@ class Messages extends React.Component {
       searchResults,
       searchTerm,
       searchLoading,
+      isChannelStarred,
       privateChannel,
     } = this.state;
     return (
@@ -138,6 +188,8 @@ class Messages extends React.Component {
           handleSearchChange={this.handleSearchChange}
           searchLoading={searchLoading}
           privateChannel={privateChannel}
+          handleStar={this.handleStar}
+          isChannelStarred={isChannelStarred}
         />
 
         <Segment>
