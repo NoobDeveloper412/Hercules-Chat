@@ -1,3 +1,4 @@
+import firebase from "../../firebase";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Icon, Menu } from "semantic-ui-react";
@@ -5,10 +6,42 @@ import { setCurrentChannel, setPrivateChannel } from "../../actions";
 
 class Starred extends Component {
   state = {
-    starredChannel: [],
+    starredChannels: [],
     activeChannel: "",
+    user: this.props.currentUser,
+    usersRef: firebase.database().ref("users"),
   };
 
+  componentDidMount() {
+    if (this.state.user) {
+      this.addListeners(this.state.user.uid);
+    }
+  }
+
+  addListeners = (userId) => {
+    this.state.usersRef
+      .child(userId)
+      .child("starred")
+      .on("child_added", (snap) => {
+        const starredChannel = { id: snap.key, ...snap.val() };
+        this.setState({
+          starredChannels: [...this.state.starredChannels, starredChannel],
+        });
+      });
+
+    this.state.usersRef
+      .child(userId)
+      .child("starred")
+      .on("child_removed", (snap) => {
+        const channelToRemove = { id: snap.key, ...snap.val() };
+        const filteredChannels = this.state.starredChannels.filter((channel) => {
+          return channel.id !== channelToRemove.id;
+        });
+        this.setState({
+          starredChannels: filteredChannels,
+        });
+      });
+  };
   setActiveChannel = (channel) => {
     this.setState({ activeChannel: channel.id });
   };
@@ -33,7 +66,7 @@ class Starred extends Component {
       </Menu.Item>
     ));
   render() {
-    const { starredChannel } = this.state;
+    const { starredChannels } = this.state;
     return (
       <React.Fragment>
         <Menu.Menu className="menu">
@@ -41,10 +74,9 @@ class Starred extends Component {
             <span>
               <Icon name="star" /> STARRED
             </span>{" "}
-            ({starredChannel.length}){" "}
-            {/* <Icon name="add" onClick={this.handleModalChange} /> */}
+            ({starredChannels.length}){" "}
           </Menu.Item>
-          {this.displayChannels(starredChannel)}
+          {this.displayChannels(starredChannels)}
         </Menu.Menu>
       </React.Fragment>
     );
