@@ -50,3 +50,8 @@ body,
 .ui.inverted.segment {
   /* width: 100%; */
 }
+
+/* ColorPanel.js */
+.twitterPicker {
+  width: 525px !important;
+}
