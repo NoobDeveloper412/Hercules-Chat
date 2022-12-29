@@ -8,7 +8,7 @@ import MetaPanel from "./MetaPanel.js/MetaPanel";
 import SidePanel from "./SidePanel/SidePanel";
 // import { ToastContainer } from "react-toastify";
 
-const App = ({ currentUser, currentChannel,isPrivateChannel }) => {
+const App = ({ currentUser, currentChannel, isPrivateChannel }) => {
   return (
     <React.Fragment>
       <Grid columns="equal" className="app" style={{ background: "#eee" }}>
@@ -26,7 +26,11 @@ const App = ({ currentUser, currentChannel,isPrivateChannel }) => {
           />
         </Grid.Column>
         <Grid.Column width={4}>
-          <MetaPanel />
+          <MetaPanel
+            key={currentChannel && currentChannel.id}
+            isPrivateChannel={isPrivateChannel}
+            currentChannel={currentChannel}
+          />
         </Grid.Column>
       </Grid>
       {/* <ToastContainer /> */}
@@ -36,6 +40,6 @@ const App = ({ currentUser, currentChannel,isPrivateChannel }) => {
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
   currentChannel: state.channel.currentChannel,
-  isPrivateChannel:state.channel.isPrivateChannel
+  isPrivateChannel: state.channel.isPrivateChannel,
 });
 export default connect(mapStateToProps)(App);
