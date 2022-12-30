@@ -7,6 +7,7 @@ import Message from "./Message";
 import Portal from "../Utility/TransitionalPortal";
 import { setUserPosts } from "../../actions";
 import { connect } from "react-redux";
+import Typing from "./Typing";
 
 class Messages extends React.Component {
   state = {
@@ -230,6 +231,10 @@ class Messages extends React.Component {
             {searchTerm
               ? this.displayMessages(searchResults)
               : this.displayMessages(messages)}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span className="user__typing">Douglas is typing</span>
+              <Typing />
+            </div>
           </Comment.Group>
         </Segment>
 
@@ -247,4 +252,4 @@ class Messages extends React.Component {
   }
 }
 
-export default connect(null, {setUserPosts})(Messages);
+export default connect(null, { setUserPosts })(Messages);
