@@ -8,6 +8,7 @@ import Portal from "../Utility/TransitionalPortal";
 import { setUserPosts } from "../../actions";
 import { connect } from "react-redux";
 import Typing from "./Typing";
+import Skeleton from "./Skeleton";
 
 class Messages extends React.Component {
   state = {
@@ -257,6 +258,14 @@ class Messages extends React.Component {
         <span className="user__typing">{user.name} is typing</span> <Typing />
       </div>
     ));
+  displayMessageSkeleton = (loading) =>
+    loading ? (
+      <React.Fragment>
+        {[...Array(10)].map((_, i) => (
+          <Skeleton key={i} />
+        ))}
+      </React.Fragment>
+    ) : null;
   render() {
     const {
       messagesRef,
@@ -273,6 +282,7 @@ class Messages extends React.Component {
       portal,
       portalTitle,
       typingUsers,
+      messagesLoading,
     } = this.state;
     return (
       <React.Fragment>
@@ -290,6 +300,7 @@ class Messages extends React.Component {
           <Comment.Group
             className={progressBar ? "messages__progress" : "messages"}
           >
+            {this.displayMessageSkeleton(messagesLoading)}
             {searchTerm
               ? this.displayMessages(searchResults)
               : this.displayMessages(messages)}
