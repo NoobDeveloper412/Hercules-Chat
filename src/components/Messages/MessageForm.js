@@ -17,6 +17,7 @@ class MessageForm extends React.Component {
     loading: false,
     errors: [],
     modal: false,
+    typingRef: firebase.database().ref("typing"),
   };
 
   handleChange = (event) => {
@@ -46,7 +47,7 @@ class MessageForm extends React.Component {
   sendMessage = () => {
     const { getMessagesRef } = this.props;
     console.log(getMessagesRef);
-    const { message, channel } = this.state;
+    const { message, channel, typingRef, user } = this.state;
     if (message) {
       this.setState({ loading: true });
       getMessagesRef()
@@ -55,6 +56,7 @@ class MessageForm extends React.Component {
         .set(this.createMessage())
         .then(() => {
           this.setState({ loading: false, message: "", errors: [] });
+          typingRef.child(channel.id).child(user.uid).remove();
         })
         .catch((err) => {
           console.log(err);
@@ -139,6 +141,15 @@ class MessageForm extends React.Component {
       });
   };
 
+  handleKeyDown = () => {
+    const { message, typingRef, channel, user } = this.state;
+    if (message) {
+      typingRef.child(channel.id).child(user.uid).set(user.displayName);
+    } else {
+      typingRef.child(channel.id).child(user.uid).remove();
+    }
+  };
+
   render() {
     const { errors, message, loading, modal, percentUploaded, uploadState } =
       this.state;
@@ -152,6 +163,7 @@ class MessageForm extends React.Component {
           labelPosition="left"
           placeholder="Write your message"
           onChange={this.handleChange}
+          onKeyDown={this.handleKeyDown}
           value={message}
           className={
             errors.some((error) => error.message.includes("message"))
