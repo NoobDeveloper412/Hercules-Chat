@@ -18,20 +18,16 @@ export class DirectMessages extends Component {
       this.addListeners(this.state.user.uid);
     }
   }
-  componentWillUnmount() {
-    this.removeListeners();
-  }
-
-  removeListeners = () => {
-    this.state.usersRef.off();
-    this.state.presenceRef.off();
-    this.state.connectedRef.off();
-  };
-
-  removeListeners = () => {
-    this.state.channelsRef.off();
-  };
-
+    componentWillUnmount() {
+     this.removeListeners()
+    }
+  
+    removeListeners = ()=>{
+      this.state.usersRef.off()
+      this.state.presenceRef.off()
+      this.state.connectedRef.off()
+    }
+    
   addListeners = (currentUserId) => {
     let loadedUsers = [];
     this.state.usersRef.on("child_added", (snap) => {
@@ -45,6 +41,7 @@ export class DirectMessages extends Component {
         });
       }
     });
+
 
     this.state.connectedRef.on("value", (snap) => {
       if (snap.val() === true) {
